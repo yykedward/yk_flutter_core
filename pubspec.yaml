@@ -1,7 +1,8 @@
 name: yk_flutter_core
 description: "YKFlutterCore"
 version: 0.0.1
-homepage:
+homepage: https://github.com/yykedward
+repository: https://github.com/yykedward/yk_flutter_core.git
 
 environment:
   sdk: ^3.6.2
