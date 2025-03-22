@@ -16,7 +16,35 @@ know whether this package might be useful for them.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+### YkFileManager
+
+```dart getDocumentPath
+
+YkFileManager.getDocumentPath();
+
+```
+
+```dart save
+
+
+      final data = Int8List.fromList(utf8.encode("fawoeigjaowiegjoiawjegoiawjegoiawejgo"));
+
+      final documentPath = await YkFileManager.getDocumentPath();
+
+      String newFilePath = "$documentPath/Yk/Document/text.txt";
+
+      final result = await YkFileManager.save(bytes: data, filePath:newFilePath);
+```
+
+```dart getData
+final documentPath = await YkFileManager.getDocumentPath();
+
+String newFilePath = "$documentPath/Yk/Document/text.txt";
+
+final detail = await YkFileManager.getData(path: newFilePath);
+
+final andoder = utf8.decode(detail ?? []);
+```
 
 ## Getting started
 
