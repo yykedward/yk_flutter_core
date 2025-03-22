@@ -16,7 +16,7 @@ class YkFileManager {
 
   static Future<bool> creatPath({required String path}) async {
     try {
-      final dir = await Directory(path);
+      final dir = Directory(path);
 
       if (!dir.existsSync()) {
         await dir.create();
@@ -40,7 +40,7 @@ class YkFileManager {
         return false;
       }
 
-      final file = await File(filePath);
+      final file = File(filePath);
 
       if (!file.existsSync()) {
         final created = await file.create();
@@ -54,8 +54,6 @@ class YkFileManager {
     } catch (e) {
       return false;
     }
-
-    return false;
   }
 
   static Future<List<int>?> getData({required String path}) async {
