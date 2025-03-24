@@ -15,28 +15,30 @@ and the Flutter guide for
 
 ### YkFileManager
 
+#### 获取存储路径
 ```dart getDocumentPath
 
 YkFileManager.getDocumentPath();
 
 ```
-
+#### 保存内容，但需要把保存的内容先进行转化成二进制data， 保存成功将返回bool
 ```dart save
 
 
-      final data = Int8List.fromList(utf8.encode("fawoeigjaowiegjoiawjegoiawjegoiawejgo"));
+  final data = Int8List.fromList(utf8.encode("fawoeigjaowiegjoiawjegoiawjegoiawejgo"));
 
-      final documentPath = await YkFileManager.getDocumentPath();
+  final documentPath = await YkFileManager.getDocumentPath();
 
-      String newFilePath = "$documentPath/Yk/Document/text.txt";
+  String newFilePath = "$documentPath/text.txt";
 
-      final result = await YkFileManager.save(bytes: data, filePath:newFilePath);
+  final result = await YkFileManager.save(bytes: data, filePath:newFilePath);
 ```
 
+#### 获取内容, 根据路径返回内容
 ```dart getData
 final documentPath = await YkFileManager.getDocumentPath();
 
-String newFilePath = "$documentPath/Yk/Document/text.txt";
+String newFilePath = "$documentPath/text.txt";
 
 final detail = await YkFileManager.getData(path: newFilePath);
 
