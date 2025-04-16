@@ -2,74 +2,140 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 
+/// 文件管理工具类
 class YkFileManager {
+  /// 私有构造函数，防止实例化
+  YkFileManager._();
 
+  /// 获取应用程序文档目录路径
+  ///
+  /// 返回文档目录的路径字符串，如果获取失败则返回空字符串
   static Future<String> getDocumentPath() async {
-    var documentPath = "";
-    if (Platform.isAndroid) {
-      documentPath = (await getExternalStorageDirectory())?.path ?? "";
-    } else if (Platform.isIOS) {
-      documentPath = (await getApplicationDocumentsDirectory()).path;
+    try {
+      if (Platform.isAndroid) {
+        final directory = await getExternalStorageDirectory();
+        return directory?.path ?? '';
+      } else if (Platform.isIOS) {
+        final directory = await getApplicationDocumentsDirectory();
+        return directory.path;
+      }
+      return '';
+    } catch (e) {
+      print('获取文档路径失败: $e');
+      return '';
     }
-    return documentPath;
   }
 
-  static Future<bool> creatPath({required String path}) async {
+  /// 创建目录
+  ///
+  /// [path] 要创建的目录路径
+  /// 返回是否创建成功
+  static Future<bool> createPath({required String path}) async {
+    if (path.isEmpty) {
+      return false;
+    }
+
     try {
       final dir = Directory(path);
-
-      if (!dir.existsSync()) {
-        await dir.create();
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
       }
       return true;
     } catch (e) {
+      print('创建目录失败: $e');
       return false;
     }
   }
 
-  static Future<bool> save({required List<int> bytes, required String filePath}) async {
+  /// 保存文件
+  ///
+  /// [bytes] 要保存的字节数据
+  /// [filePath] 文件保存路径
+  /// 返回是否保存成功
+  static Future<bool> save({
+    required List<int> bytes,
+    required String filePath,
+  }) async {
+    if (bytes.isEmpty || filePath.isEmpty) {
+      return false;
+    }
 
     try {
+      final fileName = path.basename(filePath);
+      final dirPath = filePath.replaceAll(fileName, '');
 
-      String fileNameBase = path.basename(filePath);
-
-      String fileDirPath = filePath.replaceAll(fileNameBase, "");
-
-      final createPath = await YkFileManager.creatPath(path: fileDirPath);
-      if (!createPath) {
+      // 确保目录存在
+      final pathCreated = await createPath(path: dirPath);
+      if (!pathCreated) {
         return false;
       }
 
       final file = File(filePath);
-
-      if (!file.existsSync()) {
-        final created = await file.create();
-
-        await created.writeAsBytes(bytes);
-      } else {
-        await file.writeAsBytes(bytes);
-      }
-
+      await file.writeAsBytes(bytes, flush: true);
       return true;
     } catch (e) {
+      print('保存文件失败: $e');
       return false;
     }
   }
 
+  /// 读取文件数据
+  ///
+  /// [path] 文件路径
+  /// 返回文件的字节数据，如果读取失败则返回null
   static Future<List<int>?> getData({required String path}) async {
+    if (path.isEmpty) {
+      return null;
+    }
 
     try {
-      final docFile = File(path);
-      final docFileEx = await docFile.exists();
-
-      if (docFileEx) {
-        return docFile.readAsBytes();
-      } else {
-        return null;
+      final file = File(path);
+      if (await file.exists()) {
+        return await file.readAsBytes();
       }
-
-    } catch (e) {
       return null;
+    } catch (e) {
+      print('读取文件失败: $e');
+      return null;
+    }
+  }
+
+  /// 删除文件
+  ///
+  /// [path] 要删除的文件路径
+  /// 返回是否删除成功
+  static Future<bool> deleteFile({required String path}) async {
+    if (path.isEmpty) {
+      return false;
+    }
+
+    try {
+      final file = File(path);
+      if (await file.exists()) {
+        await file.delete();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('删除文件失败: $e');
+      return false;
+    }
+  }
+
+  /// 检查文件是否存在
+  ///
+  /// [path] 文件路径
+  /// 返回文件是否存在
+  static Future<bool> exists({required String path}) async {
+    if (path.isEmpty) {
+      return false;
+    }
+
+    try {
+      return await File(path).exists();
+    } catch (e) {
+      print('检查文件是否存在失败: $e');
+      return false;
     }
   }
 }

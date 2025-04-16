@@ -1,0 +1,6 @@
+
+extension YKIntCoreExtension on int {
+
+
+
+}
