@@ -1,3 +1,7 @@
+## 0.0.4
+
+* FEAT: add YkActionManager and token
+
 ## 0.0.3
 
 * FEAT: add YkPermission
