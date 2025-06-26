@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 
 typedef CodeClosure = Future Function(dynamic actionContent);
 
@@ -5,12 +6,18 @@ typedef InAppClosure = Future Function(dynamic data);
 
 typedef ExecuteError = Future Function(String error);
 
-typedef ExecuteActionOnWeb = Future Function(String code, dynamic actionContent);
 
+class _YkActionManagerModel {
+  final String name;
+  final InAppClosure closure;
+  bool didSupportWeb = false;
+
+  _YkActionManagerModel({required this.name, required this.closure, this.didSupportWeb = false});
+}
 
 class YkActionManager {
 
-  static String YkAmGlobalKey = "yk_am_global_type";
+  static const String YkAmGlobalKey = "yk_am_global_type";
 
   static const String YkAmFuncKey = "yk_am_func_type";
 
@@ -23,7 +30,7 @@ class YkActionManager {
 
   Map<String, CodeClosure> _codeMap = {};
 
-  Map<String, InAppClosure> _inAppMap = {};
+  Map<String, _YkActionManagerModel> _inAppMap = {};
 
   ExecuteError? onError;
 
@@ -43,17 +50,28 @@ class YkActionManager {
   }
 
   // 注册 inApp 行为
-  registerInAppAction(String globalType, String funcType, InAppClosure inAppClosure) {
-    _inAppMap["${globalType}_$funcType"] = inAppClosure;
+  registerInAppAction(String globalType, String funcType, InAppClosure inAppClosure, {bool didSupportWeb = false}) {
+    String name = "${globalType}_$funcType";
+    _inAppMap[name] = _YkActionManagerModel(
+      name: name,
+      closure: inAppClosure,
+      didSupportWeb: didSupportWeb,
+    );
   }
 
   // 执行 inApp 行为
-  Future executeInAppAction(String globalType, String funcType, dynamic data) async {
+  Future executeInAppAction(String globalType, String funcType, dynamic data, {Future Function()? webExecuteCallBack}) async {
     if (globalType == "") {
       return;
     }
-    if (_inAppMap.keys.contains("${globalType}_$funcType")) {
-      return _inAppMap["${globalType}_$funcType"]!(data);
+    String name = "${globalType}_$funcType";
+    if (_inAppMap.keys.contains(name)) {
+      final model = _inAppMap[name];
+      if ((model?.didSupportWeb == false) && (kIsWeb)) {
+        await webExecuteCallBack?.call();
+        return;
+      }
+      return model?.closure.call(data);
     } else {
       onError?.call("暂不支持该跳转");
       return;

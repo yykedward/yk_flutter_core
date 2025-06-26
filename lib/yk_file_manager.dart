@@ -1,4 +1,6 @@
 import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 
@@ -11,6 +13,9 @@ class YkFileManager {
   ///
   /// 返回文档目录的路径字符串，如果获取失败则返回空字符串
   static Future<String> getDocumentPath() async {
+    if (kIsWeb) {
+      return "";
+    }
     try {
       if (Platform.isAndroid) {
         final directory = await getExternalStorageDirectory();
@@ -31,7 +36,7 @@ class YkFileManager {
   /// [path] 要创建的目录路径
   /// 返回是否创建成功
   static Future<bool> createPath({required String path}) async {
-    if (path.isEmpty) {
+    if (path.isEmpty || kIsWeb) {
       return false;
     }
 
@@ -56,7 +61,7 @@ class YkFileManager {
     required List<int> bytes,
     required String filePath,
   }) async {
-    if (bytes.isEmpty || filePath.isEmpty) {
+    if (bytes.isEmpty || filePath.isEmpty || kIsWeb) {
       return false;
     }
 
@@ -84,7 +89,7 @@ class YkFileManager {
   /// [path] 文件路径
   /// 返回文件的字节数据，如果读取失败则返回null
   static Future<List<int>?> getData({required String path}) async {
-    if (path.isEmpty) {
+    if (path.isEmpty || kIsWeb) {
       return null;
     }
 
@@ -105,7 +110,7 @@ class YkFileManager {
   /// [path] 要删除的文件路径
   /// 返回是否删除成功
   static Future<bool> deleteFile({required String path}) async {
-    if (path.isEmpty) {
+    if (path.isEmpty || kIsWeb) {
       return false;
     }
 
@@ -127,7 +132,7 @@ class YkFileManager {
   /// [path] 文件路径
   /// 返回文件是否存在
   static Future<bool> exists({required String path}) async {
-    if (path.isEmpty) {
+    if (path.isEmpty || kIsWeb) {
       return false;
     }
 

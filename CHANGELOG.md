@@ -1,3 +1,7 @@
+## 0.0.5
+
+* FIX: all util kIsWeb
+
 ## 0.0.4
 
 * FEAT: add YkActionManager and token

@@ -20,7 +20,7 @@ void main() {
       Function(dynamic data)? loginSuccess = data["login_success"];
       loginSuccess?.call("123");
       return;
-    });
+    }, didSupportWeb: true);
 
     YkFileManager.getDocumentPath().then((value) async {
       final path = "$value/text.demo";
@@ -28,9 +28,7 @@ void main() {
       return path;
     }).then((value) async {
       final data = await YkFileManager.getData(path: value);
-
       final text = utf8.decode(data ?? []);
-
       return text;
     }).then((value) {
       debugPrint(value);
