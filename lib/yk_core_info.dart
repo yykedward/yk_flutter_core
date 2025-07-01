@@ -8,16 +8,16 @@ class YkCoreInfo {
 
   String? _token;
 
+  dynamic _config;
+}
+
+extension YkCoreInfoToken on YkCoreInfo {
   Future<String?> getCoreToken({bool needShowLogin = false}) async {
     if ((_token == null || _token!.isEmpty) && needShowLogin) {
-      await YkActionManager.instance.executeAction("110", {
+      _token = await YkActionManager.instance.executeAction("110", {
         YkActionManager.YkAmGlobalKey: "private",
         YkActionManager.YkAmFuncKey: "login",
-        YkActionManager.YkAmDataKey: {
-          "login_success": (token) {
-            _token = token;
-          }
-        }
+        YkActionManager.YkAmDataKey: {},
       });
     }
     return _token;
@@ -25,5 +25,20 @@ class YkCoreInfo {
 
   void clearToken() {
     _token = null;
+  }
+}
+
+extension YkCoreInfoConfig on YkCoreInfo {
+  Future getConfig() async {
+    _config ??= await YkActionManager.instance.executeAction("110", {
+      YkActionManager.YkAmGlobalKey: "private",
+      YkActionManager.YkAmFuncKey: "config",
+      YkActionManager.YkAmDataKey: {},
+    });
+    return _config;
+  }
+
+  void clearConfig() {
+    _config = null;
   }
 }

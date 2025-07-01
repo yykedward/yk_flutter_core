@@ -17,12 +17,18 @@ void main() {
     });
 
     YkActionManager.instance.registerInAppAction("private", "login", (data) async {
-      Function(dynamic data)? loginSuccess = data["login_success"];
-      loginSuccess?.call("123");
-      return;
+      await Future.delayed(const Duration(seconds: 1));
+      return "123";
     }, didSupportWeb: true);
 
-    YkFileManager.getDocumentPath().then((value) async {
+    YkActionManager.instance.registerInAppAction("private", "config", (data) async {
+      await Future.delayed(const Duration(seconds: 1));
+      return {
+        "app_name":"xxx_app",
+      };
+    });
+
+    await YkFileManager.getDocumentPath().then((value) async {
       final path = "$value/text.demo";
       await YkFileManager.save(bytes: Int8List.fromList(utf8.encode("nihao")), filePath: path);
       return path;
@@ -35,7 +41,9 @@ void main() {
     });
 
     final token = await YkCoreInfo.instance.getCoreToken(needShowLogin: true);
+    final config = await YkCoreInfo.instance.getConfig();
 
     debugPrint("token: $token");
+    debugPrint("config: $config");
   });
 }

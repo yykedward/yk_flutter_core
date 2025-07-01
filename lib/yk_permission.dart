@@ -31,6 +31,8 @@ class YkPermission {
         if (sdkVersion < 33) {
           permission = Permission.storage;
         }
+      } else {
+        permission = Permission.photos;
       }
     } else if (type == YkPermissionType.notification) {
       permission = Permission.notification;

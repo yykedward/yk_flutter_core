@@ -1,6 +1,6 @@
 name: yk_flutter_core
 description: "YKFlutterCore"
-version: 0.0.5
+version: 0.0.6
 homepage: https://github.com/yykedward
 repository: https://github.com/yykedward/yk_flutter_core.git
 
@@ -15,6 +15,7 @@ dependencies:
   path: ^1.9.0
   device_info_plus: ^9.0.2
   permission_handler: ^11.0.1
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:

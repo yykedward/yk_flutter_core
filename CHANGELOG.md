@@ -1,3 +1,7 @@
+## 0.0.6
+
+* FEAT: fix debug target
+
 ## 0.0.5
 
 * FIX: all util kIsWeb
