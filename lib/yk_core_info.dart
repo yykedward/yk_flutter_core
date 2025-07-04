@@ -15,9 +15,9 @@ extension YkCoreInfoToken on YkCoreInfo {
   Future<String?> getCoreToken({bool needShowLogin = false}) async {
     if ((_token == null || _token!.isEmpty) && needShowLogin) {
       _token = await YkActionManager.instance.executeAction("110", {
-        YkActionManager.YkAmGlobalKey: "private",
-        YkActionManager.YkAmFuncKey: "login",
-        YkActionManager.YkAmDataKey: {},
+        YkActionManager.ykAmGlobalKey: "private",
+        YkActionManager.ykAmFuncKey: "login",
+        YkActionManager.ykAmDataKey: {},
       });
     }
     return _token;
@@ -31,9 +31,9 @@ extension YkCoreInfoToken on YkCoreInfo {
 extension YkCoreInfoConfig on YkCoreInfo {
   Future getConfig() async {
     _config ??= await YkActionManager.instance.executeAction("110", {
-      YkActionManager.YkAmGlobalKey: "private",
-      YkActionManager.YkAmFuncKey: "config",
-      YkActionManager.YkAmDataKey: {},
+      YkActionManager.ykAmGlobalKey: "private",
+      YkActionManager.ykAmFuncKey: "config",
+      YkActionManager.ykAmDataKey: {},
     });
     return _config;
   }

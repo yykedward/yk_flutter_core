@@ -10,9 +10,9 @@ void main() {
   test('adds one to input values', () async {
 
     YkActionManager.instance.registerCodeAction("110", (content) {
-      final globalType = content[YkActionManager.YkAmGlobalKey] ?? "";
-      final funcType = content[YkActionManager.YkAmFuncKey] ?? "";
-      final data = content[YkActionManager.YkAmDataKey];
+      final globalType = content[YkActionManager.ykAmGlobalKey] ?? "";
+      final funcType = content[YkActionManager.ykAmFuncKey] ?? "";
+      final data = content[YkActionManager.ykAmDataKey];
       return YkActionManager.instance.executeInAppAction(globalType, funcType, data);
     });
 

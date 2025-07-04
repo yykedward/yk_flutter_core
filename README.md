@@ -17,14 +17,10 @@ and the Flutter guide for
 
 #### 获取存储路径
 ```dart getDocumentPath
-
 YkFileManager.getDocumentPath();
-
 ```
 #### 保存内容，但需要把保存的内容先进行转化成二进制data， 保存成功将返回bool
 ```dart save
-
-
   final data = Int8List.fromList(utf8.encode("fawoeigjaowiegjoiawjegoiawjegoiawejgo"));
 
   final documentPath = await YkFileManager.getDocumentPath();
