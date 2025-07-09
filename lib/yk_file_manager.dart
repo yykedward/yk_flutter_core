@@ -26,7 +26,7 @@ class YkFileManager {
       }
       return '';
     } catch (e) {
-      print('获取文档路径失败: $e');
+      debugPrint('获取文档路径失败: $e');
       return '';
     }
   }
@@ -47,7 +47,7 @@ class YkFileManager {
       }
       return true;
     } catch (e) {
-      print('创建目录失败: $e');
+      debugPrint('创建目录失败: $e');
       return false;
     }
   }
@@ -79,7 +79,7 @@ class YkFileManager {
       await file.writeAsBytes(bytes, flush: true);
       return true;
     } catch (e) {
-      print('保存文件失败: $e');
+      debugPrint('保存文件失败: $e');
       return false;
     }
   }
@@ -100,7 +100,7 @@ class YkFileManager {
       }
       return null;
     } catch (e) {
-      print('读取文件失败: $e');
+      debugPrint('读取文件失败: $e');
       return null;
     }
   }
@@ -122,7 +122,7 @@ class YkFileManager {
       }
       return false;
     } catch (e) {
-      print('删除文件失败: $e');
+      debugPrint('删除文件失败: $e');
       return false;
     }
   }
@@ -139,7 +139,7 @@ class YkFileManager {
     try {
       return await File(path).exists();
     } catch (e) {
-      print('检查文件是否存在失败: $e');
+      debugPrint('检查文件是否存在失败: $e');
       return false;
     }
   }
