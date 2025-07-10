@@ -1,45 +1,58 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+# yk_flutter_core
 
-## Features
+一个 Flutter 核心功能库，提供常用工具和组件，简化开发流程。
 
-### YkFileManager
+## 功能
 
-#### 获取存储路径
-```dart getDocumentPath
-YkFileManager.getDocumentPath();
-```
-#### 保存内容，但需要把保存的内容先进行转化成二进制data， 保存成功将返回bool
-```dart save
-  final data = Int8List.fromList(utf8.encode("fawoeigjaowiegjoiawjegoiawjegoiawejgo"));
+- **YkFileManager**
+  - 获取存储路径
+  - 保存内容（需先将内容转换为二进制数据）
+  - 读取内容（根据路径获取数据）
 
-  final documentPath = await YkFileManager.getDocumentPath();
+## 安装
 
-  String newFilePath = "$documentPath/text.txt";
+在 `pubspec.yaml` 中添加：
 
-  final result = await YkFileManager.save(bytes: data, filePath:newFilePath);
+```yaml
+dependencies:
+  yk_flutter_core: ^0.0.6
 ```
 
-#### 获取内容, 根据路径返回内容
-```dart getData
-final documentPath = await YkFileManager.getDocumentPath();
+然后运行：
 
-String newFilePath = "$documentPath/text.txt";
-
-final detail = await YkFileManager.getData(path: newFilePath);
-
-final andoder = utf8.decode(detail ?? []);
+```bash
+flutter pub get
 ```
 
+## 使用示例
 
+### 使用文件管理器保存和读取数据
 
+```dart
+import 'package:yk_flutter_core/yk_file_manager.dart';
+
+void exampleUsage() async {
+  final data = '示例内容'.codeUnits; // 转换为二进制数据
+  final success = await YkFileManager.saveData(data, 'example.txt');
+  if (success) {
+    final content = await YkFileManager.getData('example.txt');
+    print('文件内容: $content');
+  } else {
+    print('保存失败');
+  }
+}
+```
+
+## 贡献
+
+欢迎提交 issue 和 PR！请遵循项目的代码规范和结构。
+
+## 版本历史
+
+查看 [CHANGELOG.md](CHANGELOG.md) 获取完整的版本更新信息。
+
+## 许可证
+
+本项目基于 MIT 许可证，详见 [LICENSE](LICENSE) 文件。
