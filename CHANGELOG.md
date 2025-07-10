@@ -1,5 +1,10 @@
 ## 0.0.6
 
+* ADD: YkClickWidget
+* ADD: YkClickWidget
+
+## 0.0.6
+
 * FEAT: fix debug target
 
 ## 0.0.5
