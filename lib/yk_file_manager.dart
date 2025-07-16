@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -26,7 +27,7 @@ class YkFileManager {
       }
       return '';
     } catch (e) {
-      debugPrint('获取文档路径失败: $e');
+      developer.log('获取文档路径失败: $e');
       return '';
     }
   }
@@ -47,7 +48,7 @@ class YkFileManager {
       }
       return true;
     } catch (e) {
-      debugPrint('创建目录失败: $e');
+      developer.log('创建目录失败: $e');
       return false;
     }
   }
@@ -79,7 +80,7 @@ class YkFileManager {
       await file.writeAsBytes(bytes, flush: true);
       return true;
     } catch (e) {
-      debugPrint('保存文件失败: $e');
+      developer.log('保存文件失败: $e');
       return false;
     }
   }
@@ -100,7 +101,7 @@ class YkFileManager {
       }
       return null;
     } catch (e) {
-      debugPrint('读取文件失败: $e');
+      developer.log('读取文件失败: $e');
       return null;
     }
   }
@@ -122,7 +123,7 @@ class YkFileManager {
       }
       return false;
     } catch (e) {
-      debugPrint('删除文件失败: $e');
+      developer.log('删除文件失败: $e');
       return false;
     }
   }
@@ -139,7 +140,7 @@ class YkFileManager {
     try {
       return await File(path).exists();
     } catch (e) {
-      debugPrint('检查文件是否存在失败: $e');
+      developer.log('检查文件是否存在失败: $e');
       return false;
     }
   }
