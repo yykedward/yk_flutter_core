@@ -13,12 +13,10 @@ typedef ExecuteError = Future<void> Function(String error);
 class _YkActionManagerModel {
   final String name;
   final InAppClosure closure;
-  final bool didSupportWeb;
 
   const _YkActionManagerModel({
     required this.name,
     required this.closure,
-    this.didSupportWeb = false,
   });
 }
 
@@ -66,7 +64,6 @@ class YkActionManager {
     _inAppMap[name] = _YkActionManagerModel(
       name: name,
       closure: inAppClosure,
-      didSupportWeb: didSupportWeb,
     );
   }
 
@@ -83,10 +80,6 @@ class YkActionManager {
     String name = "${globalType}_$funcType";
     final model = _inAppMap[name];
     if (model != null) {
-      if (!model.didSupportWeb && kIsWeb) {
-        await webExecuteCallBack?.call();
-        return null;
-      }
       return model.closure.call(data);
     } else {
       await _onError?.call("暂不支持该跳转");
