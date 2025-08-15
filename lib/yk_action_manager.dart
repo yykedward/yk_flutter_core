@@ -57,9 +57,8 @@ class YkActionManager {
   void registerInAppAction(
     String globalType,
     String funcType,
-    InAppClosure inAppClosure, {
-    bool didSupportWeb = false,
-  }) {
+    InAppClosure inAppClosure,
+      ) {
     String name = "${globalType}_$funcType";
     _inAppMap[name] = _YkActionManagerModel(
       name: name,
@@ -71,9 +70,7 @@ class YkActionManager {
   Future<dynamic> executeInAppAction(
     String globalType,
     String funcType,
-    dynamic data, {
-    Future<void> Function()? webExecuteCallBack,
-  }) async {
+    dynamic data, ) async {
     if (globalType.isEmpty) {
       return null;
     }

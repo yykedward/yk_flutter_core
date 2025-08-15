@@ -16,10 +16,10 @@ void main() {
       return YkActionManager.instance.executeInAppAction(globalType, funcType, data);
     });
 
-    YkActionManager.instance.registerInAppAction("private", "login", (data) async {
+    YkActionManager.instance.registerInAppAction("private", "get_token", (data) async {
       await Future.delayed(const Duration(seconds: 1));
       return "123";
-    }, didSupportWeb: true);
+    });
 
     YkActionManager.instance.registerInAppAction("private", "config", (data) async {
       await Future.delayed(const Duration(seconds: 1));

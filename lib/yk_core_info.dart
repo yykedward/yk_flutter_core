@@ -16,7 +16,7 @@ extension YkCoreInfoToken on YkCoreInfo {
     if ((_token == null || _token!.isEmpty) && needShowLogin) {
       _token = await YkActionManager.instance.executeAction("110", {
         YkActionManager.ykAmGlobalKey: "private",
-        YkActionManager.ykAmFuncKey: "login",
+        YkActionManager.ykAmFuncKey: "get_token",
         YkActionManager.ykAmDataKey: {},
       });
     }
