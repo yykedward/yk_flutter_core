@@ -1,11 +1,8 @@
-## 0.0.9
-
-* FEAT：change get token action name
-
 ## 0.0.8
 
 * ADD: YkDigLogUtil
 * ADD: YKNotificationCenter
+* FEAT：change get token action name
 
 ## 0.0.7
 
