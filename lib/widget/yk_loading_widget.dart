@@ -5,9 +5,9 @@ class YkLoadingWidget<T> extends StatelessWidget {
 
   final Widget Function(BuildContext context, T? t) widgetBuilder;
 
-  Widget? loadingWidget;
+  final Widget? loadingWidget;
 
-  YkLoadingWidget({super.key, required this.initFuture, required this.widgetBuilder, this.loadingWidget});
+  const YkLoadingWidget({super.key, required this.initFuture, required this.widgetBuilder, this.loadingWidget});
 
   @override
   Widget build(BuildContext context) {

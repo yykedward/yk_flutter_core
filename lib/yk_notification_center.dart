@@ -33,7 +33,7 @@ class YKNotificationCenter {
     return _observerStream.stream.listen((event) {
       final notification = event[name];
       if (notification != null) {
-        callBack?.call(notification!);
+        callBack?.call(notification);
       }
     });
   }

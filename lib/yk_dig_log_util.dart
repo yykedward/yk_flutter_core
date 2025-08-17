@@ -5,26 +5,17 @@ class _LogData {
   final String event;
   final String title;
   final dynamic params;
-  final DateTime timestamp;
 
   _LogData({
     required this.event,
     required this.title,
     required this.params,
-  }) : timestamp = DateTime.now();
-
-  const _LogData.withTimestamp({
-    required this.event,
-    required this.title,
-    required this.params,
-    required this.timestamp,
   });
 
   Map<String, dynamic> toJson() => {
     'event': event,
     'title': title,
     'params': params,
-    'timestamp': timestamp.toIso8601String(),
   };
 }
 

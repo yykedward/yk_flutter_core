@@ -50,8 +50,6 @@ class YkPermission {
         break;
     }
 
-    if (permission == null) return false;
-
     PermissionStatus status = await permission.status;
     if (status.isGranted || status.isLimited) {
       return true;

@@ -1,3 +1,6 @@
+## 0.0.9
+
+* FIX: fix warning
 ## 0.0.8
 
 * ADD: YkDigLogUtil
