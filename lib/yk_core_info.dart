@@ -42,3 +42,19 @@ extension YkCoreInfoConfig on YkCoreInfo {
     _config = null;
   }
 }
+
+extension YkCoreInfoNetworking on YkCoreInfo {
+
+  Future<dynamic> networking({required String path, Map<String, dynamic>? params, String method = "GET", Map<String, dynamic>? header}) async {
+    return await YkActionManager.instance.executeAction("110", {
+      YkActionManager.ykAmGlobalKey: "private",
+      YkActionManager.ykAmFuncKey: "network",
+      YkActionManager.ykAmDataKey: {
+        "url": path,
+        "method": method,
+        "params": params,
+        "header": header
+      },
+    });
+  }
+}
