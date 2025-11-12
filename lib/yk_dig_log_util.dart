@@ -45,12 +45,12 @@ class YkDigLogUtil {
   String _currentFileName = '';
   bool _isWriting = false;
   final List<String> _logQueue = [];
+  static const String _logExtension = '.log';
+  static const String _archivedExtension = '.archived';
+  static const String _uploadedExtension = '.uploaded';
 
-  // 将 const 改为 static 变量，使其可修改
-  static int maxFileSize = 1024 * 5; // 默认值为 5KB
-  static const String logExtension = '.log';
-  static const String archivedExtension = '.archived';
-  static const String uploadedExtension = '.uploaded';
+
+  static int maxFileSize = 1024 * 5; // 单个文件最大存储容量 默认值为 5KB
 
   // 初始化方法
   static Future<void> setup({required YkDigLogUtilDelegate delegate}) async {
@@ -136,16 +136,16 @@ class YkDigLogUtil {
 
     for (final file in files) {
       final path = file.path;
-      if (path.endsWith(uploadedExtension)) {
+      if (path.endsWith(_uploadedExtension)) {
         await file.delete();
         continue;
       }
 
-      if (path.endsWith(logExtension)) {
-        final newPath = path.replaceAll(logExtension, archivedExtension);
+      if (path.endsWith(_logExtension)) {
+        final newPath = path.replaceAll(_logExtension, _archivedExtension);
         final archivedFile = await File(path).rename(newPath);
         await _uploadFile(archivedFile);
-      } else if (path.endsWith(archivedExtension)) {
+      } else if (path.endsWith(_archivedExtension)) {
         await _uploadFile(File(path));
       }
     }
@@ -160,7 +160,7 @@ class YkDigLogUtil {
 
       final success = await _delegate?.uploadCallBack(content) ?? false;
       if (success) {
-        final newPath = file.path.replaceAll(archivedExtension, uploadedExtension);
+        final newPath = file.path.replaceAll(_archivedExtension, _uploadedExtension);
         await file.rename(newPath);
       }
     } catch (e) {
@@ -181,7 +181,7 @@ class YkDigLogUtil {
   Future<File?> _getLogFile(String fileName) async {
     try {
       final dir = await _getLogDirectory();
-      final path = '${dir.path}$fileName$logExtension';
+      final path = '${dir.path}$fileName$_logExtension';
       return await File(path).create();
     } catch (e) {
       _delegate?.logCallBack?.call('创建日志文件失败: $e');
@@ -192,7 +192,7 @@ class YkDigLogUtil {
   Future<void> _archiveCurrentFile(File file) async {
     try {
       if (await file.exists()) {
-        final newPath = file.path.replaceAll(logExtension, archivedExtension);
+        final newPath = file.path.replaceAll(_logExtension, _archivedExtension);
         await file.rename(newPath);
         await _uploadFile(File(newPath));
       }
