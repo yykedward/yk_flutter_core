@@ -1,6 +1,15 @@
+## 0.0.11
+
+* FIX: add yk supabase manager
+
+## 0.0.10
+
+* FIX: add text widget
+
 ## 0.0.9
 
 * FIX: fix warning
+
 ## 0.0.8
 
 * ADD: YkDigLogUtil
