@@ -1,70 +1,8 @@
+import 'dart:io';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:flutter/foundation.dart';
-import 'package:logging/logging.dart';
-
-/***
- *
-
-
-    import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
-
-    const json = (status: number, body: Record<string, unknown>) =>
-    new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
-
-    function normalizePhone(phone: string): string {
-    return phone.trim().replace(/[\s-]/g, "");
-    }
-
-    async function findUserByPhone(supabase: any, phone: string) {
-    let page = 1;
-    const perPage = 200;
-    while (true) {
-    const { data, error } = await supabase.auth.admin.listUsers({ page, perPage });
-    if (error) return undefined;
-    const users = data?.users ?? [];
-    const found = users.find(
-    (u: any) =>
-    (typeof u.phone === "string" && normalizePhone(u.phone) === phone) ||
-    (typeof u.user_metadata?.phone === "string" && normalizePhone(u.user_metadata.phone) === phone)
-    );
-    if (found) return found;
-    if (users.length < perPage) return undefined;
-    page++;
-    }
-    }
-
-    serve(async (req) => {
-    try {
-    const url = Deno.env.get("SUPABASE_URL")!;
-    const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(url, key);
-    const body = await req.json();
-    const rawPhone = String(body?.phone ?? "");
-    const password = String(body?.password ?? "");
-    const phone = normalizePhone(rawPhone);
-    if (!phone || phone.length < 6) return json(400, { code: 400, message: "手机号不合法" });
-    const exists = await findUserByPhone(supabase, phone);
-    if (exists) return json(409, { code: 409, message: "用户已注册" });
-    const meta: Record<string, unknown> = { user_type: "phone", phone };
-    if (typeof body?.nickname === "string" && body.nickname.length > 0) meta.nickname = body.nickname;
-    if (typeof body?.name === "string" && body.name.length > 0) meta.name = body.name;
-    if (typeof body?.full_name === "string" && body.full_name.length > 0) meta.full_name = body.full_name;
-    const { data, error } = await supabase.auth.admin.createUser({
-    phone,
-    password,
-    phone_confirm: true,
-    user_metadata: meta,
-    });
-    if (error) return json(400, { code: 400, message: error.message });
-    return json(200, { code: 200, data: { userId: data.user?.id } });
-    } catch (e) {
-    return json(500, { code: 500, message: String(e) });
-    }
-    });
-
- **/
 
 @immutable
 class YkUser {
@@ -74,30 +12,53 @@ class YkUser {
   final String? userType;
   final String? nickname;
 
-  const YkUser({
+  const YkUser({required this.id, this.email, this.phone, this.userType, this.nickname});
+}
+
+@immutable
+class YkFileObject {
+  final String name;
+  final String? bucketId;
+  final String? owner;
+  final String? id;
+  final String? updatedAt;
+  final String? createdAt;
+  final String? lastAccessedAt;
+  final Map<String, dynamic>? metadata;
+  final Bucket? buckets;
+
+  const YkFileObject({
+    required this.name,
+    required this.bucketId,
+    required this.owner,
     required this.id,
-    this.email,
-    this.phone,
-    this.userType,
-    this.nickname,
+    required this.updatedAt,
+    required this.createdAt,
+    required this.lastAccessedAt,
+    required this.metadata,
+    required this.buckets,
   });
 }
 
-class YkSupabaseManager {
-  final Logger _logger = Logger('YkSupabaseManager');
+class YkSupabaseManagerDelegate {
+  final void Function(bool, String?) onLoading;
 
-  void Function(bool, String?)? _onLoading;
+  void Function(String msg)? log;
+
+  void Function(String msg)? onError;
+
+  YkSupabaseManagerDelegate({required this.onLoading, this.log, this.onError});
+}
+
+class YkSupabaseManager {
+
+  final Map<String, DateTime> _fnLastCallAt = {};
+  final Set<String> _fnInFlight = {};
+  Duration _fnRateLimitWindow = const Duration(milliseconds: 500);
 
   YkSupabaseManager._internal();
 
   static final YkSupabaseManager _instance = YkSupabaseManager._internal();
-
-  factory YkSupabaseManager({void Function(bool, String?)? onLoading}) {
-    if (onLoading != null) {
-      _instance._onLoading = onLoading;
-    }
-    return _instance;
-  }
 
   static YkSupabaseManager get instance => _instance;
 
@@ -109,13 +70,12 @@ class YkSupabaseManager {
 
   YkUser? get currentYkUser => _toYkUser(_auth.currentUser);
 
-  Stream<YkUser?> get onUserChange =>
-      onAuthStateChange.map((e) => _toYkUser(e.session?.user));
+  Stream<YkUser?> get onUserChange => onAuthStateChange.map((e) => _toYkUser(e.session?.user));
 
-  static Future<void> initialize({
-    required String url,
-    required String anonKey,
-  }) {
+  YkSupabaseManagerDelegate? _delegate;
+
+  static Future<void> initialize({required String url, required String anonKey, YkSupabaseManagerDelegate? delegate}) {
+    YkSupabaseManager._instance._delegate = delegate;
     return Supabase.initialize(url: url, anonKey: anonKey);
   }
 
@@ -125,120 +85,8 @@ class YkSupabaseManager {
     return Supabase.initialize(url: url, anonKey: anonKey);
   }
 
-  void setLoadingCallback(void Function(bool, String?)? cb) {
-    _onLoading = cb;
-  }
-
-  void _notifyLoading(bool isLoading, [String? message]) {
-    final cb = _onLoading;
-    if (cb != null) {
-      cb(isLoading, message);
-    }
-  }
-
-  Future<T> _withLoading<T>(
-      Future<T> Function() action, [
-        String? message,
-      ]) async {
-    _notifyLoading(true, message);
-    try {
-      final result = await action();
-      return result;
-    } on PostgrestException catch (e) {
-      _error('postgrest: ${e.message}');
-      throw Exception(e.message);
-    } on AuthException catch (e) {
-      _error('auth: ${e.message}');
-      throw Exception(e.message);
-    } catch (e) {
-      _error('unexpected: $e');
-      throw Exception('$e');
-    } finally {
-      _notifyLoading(false, null);
-    }
-  }
-
-  Future<void> authSignInWithPassword(String email, String password) {
-    return _withLoading(
-          () => _signInWithPassword(email: email, password: password),
-    );
-  }
-
-  Future<void> authSignInWithPhone(String phone, String password) {
-    return _withLoading(
-          () => _signInWithPassword(phone: phone, password: password),
-    );
-  }
-
-  Future<void> authSignUp(String email, String password) async {
-    await _withLoading(
-          () => _signUp(email: email, password: password, logTag: 'email'),
-    );
-  }
-
-  Future<void> authSignUpWithMetadata(
-      String email,
-      String password, {
-        Map<String, dynamic>? data,
-      }) async {
-    await _withLoading(
-          () => _signUp(
-        email: email,
-        password: password,
-        data: data,
-        logTag: 'email+metadata',
-      ),
-    );
-  }
-
-  Future<void> authSignUpPhoneWithMetadata(
-      String phone,
-      String password, {
-        Map<String, dynamic>? data,
-      }) async {
-    await _withLoading(
-          () => _signUp(
-        phone: phone,
-        password: password,
-        data: data,
-        logTag: 'phone+metadata',
-      ),
-    );
-  }
-
-  Future<void> authSignOut() {
-    return _withLoading(() => _auth.signOut());
-  }
-
-  Future<void> authResetPasswordForEmail(
-      String email, {
-        required String redirectTo,
-      }) {
-    return _withLoading(
-          () => _auth.resetPasswordForEmail(email, redirectTo: redirectTo),
-    );
-  }
-
-  Future<void> authUpdatePassword(String password) {
-    return _withLoading(
-          () => _updateUser(password: password, logTag: 'password'),
-    );
-  }
-
-  Future<void> authUpdateUserMetadata(Map<String, dynamic> data) {
-    return _withLoading(() => _updateUser(data: data, logTag: 'metadata'));
-  }
-
-  YkUser? _toYkUser(User? user) {
-    if (user == null) return null;
-    final meta = user.userMetadata ?? {};
-    return YkUser(
-      id: user.id,
-      email: user.email,
-      phone: meta['phone'] as String?,
-      userType: meta['user_type'] as String?,
-      nickname: meta['nickname'] as String?,
-    );
+  void setFnRateLimitWindow(Duration window) {
+    _fnRateLimitWindow = window;
   }
 
   Future<String> getDeviceId() async {
@@ -253,7 +101,10 @@ class YkSupabaseManager {
       return 'unknown';
     }
   }
+}
 
+/// MARK: DataBase
+extension YkSupabaseDataBaseExtension on YkSupabaseManager {
   Future<List<Map<String, dynamic>>> dbSelect(
       String table, {
         String? orderBy,
@@ -273,21 +124,14 @@ class YkSupabaseManager {
     });
   }
 
-  Future<Map<String, dynamic>> dbInsert(
-      String table,
-      Map<String, dynamic> values,
-      ) async {
+  Future<Map<String, dynamic>> dbInsert(String table, Map<String, dynamic> values) async {
     return _withLoading(() async {
       final res = await _client.from(table).insert(values).select().single();
       return res;
     });
   }
 
-  Future<Map<String, dynamic>> dbUpdate(
-      String table,
-      Map<String, dynamic> values, {
-        Map<String, dynamic>? eq,
-      }) async {
+  Future<Map<String, dynamic>> dbUpdate(String table, Map<String, dynamic> values, {Map<String, dynamic>? eq}) async {
     return _withLoading(() async {
       dynamic q = _client.from(table).update(values);
       q = _applyEq(q, eq);
@@ -311,33 +155,71 @@ class YkSupabaseManager {
     });
   }
 
-  Future<dynamic> fnInvoke(String name, {dynamic body}) async {
+  Future<dynamic> fnInvoke(String name, {dynamic body, Duration? window}) async {
     return _withLoading(() async {
-      final res = await _client.functions.invoke(name, body: body);
-      return res.data;
+      final now = DateTime.now();
+      final w = window ?? _fnRateLimitWindow;
+      final last = _fnLastCallAt[name];
+      if (last != null && now.difference(last) < w) {
+        _log('fn $name throttled');
+        throw Exception('请求过于频繁，请稍后再试');
+      }
+      if (_fnInFlight.contains(name)) {
+        _log('fn $name in-flight');
+        throw Exception('请求过于频繁，请稍后再试');
+      }
+      _fnInFlight.add(name);
+      _fnLastCallAt[name] = now;
+      try {
+        final res = await _client.functions.invoke(name, body: body);
+        return res.data;
+      } finally {
+        _fnInFlight.remove(name);
+      }
     });
   }
+}
 
-  bool _isStrongPassword(String password) {
-    if (password.length < 8) return false;
-    final hasLetter = RegExp(r'[A-Za-z]').hasMatch(password);
-    final hasDigit = RegExp(r'\d').hasMatch(password);
-    return hasLetter && hasDigit;
+/// MARK: Auth
+extension YkSupabaseAuthExtension on YkSupabaseManager {
+  Future<void> authSignInWithPassword(String email, String password) {
+    return _withLoading(() => _signInWithPassword(email: email, password: password));
   }
 
-  Future<Map<String, dynamic>> authRegisterPhoneViaEdge(
-      String phone,
-      String password, {
-        Map<String, dynamic>? metadata,
-      }) async {
+  Future<void> authSignInWithPhone(String phone, String password) {
+    return _withLoading(() => _signInWithPassword(phone: phone, password: password));
+  }
+
+  Future<void> authSignUpWithMetadata(String email, String password, {Map<String, dynamic>? data}) async {
+    await _withLoading(() => _signUp(email: email, password: password, data: data, logTag: 'email+metadata'));
+  }
+
+  Future<void> authSignUpPhoneWithMetadata(String phone, String password, {Map<String, dynamic>? data}) async {
+    await _withLoading(() => _signUp(phone: phone, password: password, data: data, logTag: 'phone+metadata'));
+  }
+
+  Future<void> authSignOut() {
+    return _withLoading(() => _auth.signOut());
+  }
+
+  Future<void> authResetPasswordForEmail(String email, {required String redirectTo}) {
+    return _withLoading(() => _auth.resetPasswordForEmail(email, redirectTo: redirectTo));
+  }
+
+  Future<void> authUpdatePassword(String password) {
+    return _withLoading(() => _updateUser(password: password, logTag: 'password'));
+  }
+
+  Future<void> authUpdateUserMetadata(Map<String, dynamic> data) {
+    return _withLoading(() => _updateUser(data: data, logTag: 'metadata'));
+  }
+
+  Future<Map<String, dynamic>> authRegisterPhoneViaEdge(String phone, String password, {Map<String, dynamic>? metadata}) async {
     return _withLoading(() async {
       if (!_isStrongPassword(password)) {
         return {'code': 400, 'message': '密码不符合安全要求'};
       }
-      final Map<String, dynamic> payload = {
-        'phone': phone,
-        'password': password,
-      };
+      final Map<String, dynamic> payload = {'phone': phone, 'password': password};
       if (metadata != null) {
         payload.addAll(metadata);
       }
@@ -348,42 +230,90 @@ class YkSupabaseManager {
       return {'code': 500, 'message': '服务响应异常'};
     }, '正在注册');
   }
+}
 
-  Future<void> _signUp({
-    String? email,
-    String? phone,
-    required String password,
-    Map<String, dynamic>? data,
-    required String logTag,
-  }) async {
-    final res = await _auth.signUp(
-      email: email,
-      phone: phone,
-      password: password,
-      data: data,
+/// MARK: Storage
+extension YkSupabaseStorageExtension on YkSupabaseManager {
+  Future<List<YkFileObject>> listFiles(String bucket, {required String prefix}) async {
+    final storage = Supabase.instance.client.storage.from(bucket);
+    final files = await storage.list(path: prefix);
+    return files.map((e) => YkFileObjectInitExtension.makeFrom(fileObject: e)).toList();
+  }
+
+  Future<String> uploadToSignedUrl({required String bucket, required String key, required String token, required File file}) async {
+    return _withLoading(() {
+      final storage = Supabase.instance.client.storage.from(bucket);
+      return storage.uploadToSignedUrl(key, token, file);
+    });
+  }
+
+  Future<void> deleteFile(String bucket, String path) async {
+    return _withLoading(() {
+      final storage = Supabase.instance.client.storage.from(bucket);
+      return storage.remove([path]);
+    });
+  }
+}
+
+/// MARK: Private
+extension YkSupabasePrivateExtension on YkSupabaseManager {
+  void _notifyLoading(bool isLoading, [String? message]) {
+    final cb = _delegate?.onLoading;
+    if (cb != null) {
+      cb(isLoading, message);
+    }
+  }
+
+  Future<T> _withLoading<T>(Future<T> Function() action, [String? message]) async {
+    _notifyLoading(true, message);
+    try {
+      final result = await action();
+      return result;
+    } on PostgrestException catch (e) {
+      _error('postgrest: ${e.message}');
+      throw Exception(e.message);
+    } on AuthException catch (e) {
+      _error('auth: ${e.message}');
+      throw Exception(e.message);
+    } catch (e) {
+      _error('unexpected: $e');
+      throw Exception('$e');
+    } finally {
+      _notifyLoading(false, null);
+    }
+  }
+
+  YkUser? _toYkUser(User? user) {
+    if (user == null) return null;
+    final meta = user.userMetadata ?? {};
+    return YkUser(
+      id: user.id,
+      email: user.email,
+      phone: meta['phone'] as String?,
+      userType: meta['user_type'] as String?,
+      nickname: meta['nickname'] as String?,
     );
+  }
+
+  bool _isStrongPassword(String password) {
+    if (password.length < 8) return false;
+    final hasLetter = RegExp(r'[A-Za-z]').hasMatch(password);
+    final hasDigit = RegExp(r'\d').hasMatch(password);
+    return hasLetter && hasDigit;
+  }
+
+  Future<void> _signUp({String? email, String? phone, required String password, Map<String, dynamic>? data, required String logTag}) async {
+    final res = await _auth.signUp(email: email, phone: phone, password: password, data: data);
     if (res.user == null && res.session == null) {
       _log('signUp($logTag) returned no user/session');
     }
   }
 
-  Future<void> _signInWithPassword({
-    String? email,
-    String? phone,
-    required String password,
-  }) {
-    return _auth.signInWithPassword(
-      email: email,
-      phone: phone,
-      password: password,
-    );
+  Future<void> _signInWithPassword({String? email, String? phone, required String password}) {
+    return _auth.signInWithPassword(email: email, phone: phone, password: password);
   }
 
-  Future<void> _updateUser({
-    String? password,
-    Map<String, dynamic>? data,
-    String? logTag,
-  }) async {
+  Future<void> _updateUser({String? password, Map<String, dynamic>? data, String? logTag}) async {
     await _auth.updateUser(UserAttributes(password: password, data: data));
   }
 
@@ -420,10 +350,26 @@ class YkSupabaseManager {
   }
 
   _log(String msg) {
-    _logger.warning(msg);
+    _delegate?.log?.call(msg);
   }
 
   _error(String msg) {
-    _logger.severe(msg);
+    _delegate?.onError?.call(msg);
+  }
+}
+
+extension YkFileObjectInitExtension on YkFileObject {
+  static YkFileObject makeFrom({required FileObject fileObject}) {
+    return YkFileObject(
+      id: fileObject.id,
+      name: fileObject.name,
+      bucketId: fileObject.bucketId,
+      owner: fileObject.owner,
+      updatedAt: fileObject.updatedAt,
+      createdAt: fileObject.createdAt,
+      lastAccessedAt: fileObject.lastAccessedAt,
+      metadata: fileObject.metadata,
+      buckets: fileObject.buckets,
+    );
   }
 }
