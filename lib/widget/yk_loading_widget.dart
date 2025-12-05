@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:yk_flutter_core/yk_core_info.dart';
 
-class YkLoadingWidget<T> extends StatelessWidget {
-  final Future<T> initFuture;
+class YkLoadingWidget extends StatelessWidget {
+  final double height;
+  final double width;
 
-  final Widget Function(BuildContext context, T? t) widgetBuilder;
-
-  final Widget? loadingWidget;
-
-  const YkLoadingWidget({super.key, required this.initFuture, required this.widgetBuilder, this.loadingWidget});
+  const YkLoadingWidget({super.key, this.height = 50, this.width = 50});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: initFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return widgetBuilder(context, snapshot.data);
-          } else {
-            if (this.loadingWidget != null) {
-              return this.loadingWidget!;
-            }
-            return SizedBox(width: 100, height: 100, child: const Center(child: CircularProgressIndicator()));
-          }
-        });
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(color: YkCoreInfo.bgWhiteColor),
+      child: Center(child: CircularProgressIndicator(color: YkCoreInfo.mainColor)),
+    );
   }
 }

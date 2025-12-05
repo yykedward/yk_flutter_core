@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 
 class YkClickWidget extends StatelessWidget {
-
   final GestureTapCallback onClick;
   final Widget child;
   final bool needFilter;
@@ -15,7 +13,6 @@ class YkClickWidget extends StatelessWidget {
     required this.child,
     this.needFilter = false,
   });
-
 
   @override
   Widget build(BuildContext context) {

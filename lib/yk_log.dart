@@ -10,12 +10,16 @@ mixin YkLogDelegate {
 }
 
 class YkLog {
-  final Logger _logger = Logger('YkLog');
+  final _logger = Logger('YkLog');
 
   // 单例实现
   static final YkLog _instance = YkLog._();
 
-  YkLog._();
+  YkLog._() {
+    _logger.onRecord.listen((value) {
+      print('[YkLog][${value.level.name}] ${value.message}');
+    });
+  }
 
   YkLogDelegate? _delegate;
 
@@ -30,7 +34,7 @@ class YkLog {
       if (kDebugMode) {
         developer.log("YkLog log : $msg");
       } else {
-        YkLog._instance._logger.warning(msg);
+        YkLog._instance._logger.info(msg);
       }
     }
   }

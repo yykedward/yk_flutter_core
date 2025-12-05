@@ -1,6 +1,7 @@
 ## 0.0.11
 
-* FIX: add yk supabase manager
+* ADD: yk supabase manager
+* ADD: yk log
 
 ## 0.0.10
 

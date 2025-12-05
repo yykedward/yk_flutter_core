@@ -12,9 +12,6 @@ enum YkPermissionType {
 }
 
 class YkPermission {
-
-
-
   /// 检查并请求权限
   /// [type] 权限类型
   /// [requestIfDenied] 是否在未授权时自动请求

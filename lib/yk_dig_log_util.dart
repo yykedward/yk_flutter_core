@@ -13,10 +13,10 @@ class _LogData {
   });
 
   Map<String, dynamic> toJson() => {
-    'event': event,
-    'title': title,
-    'params': params,
-  };
+        'event': event,
+        'title': title,
+        'params': params,
+      };
 }
 
 class YkDigLogUtilDelegate {
@@ -48,7 +48,6 @@ class YkDigLogUtil {
   static const String _logExtension = '.log';
   static const String _archivedExtension = '.archived';
   static const String _uploadedExtension = '.uploaded';
-
 
   static int maxFileSize = 1024 * 5; // 单个文件最大存储容量 默认值为 5KB
 

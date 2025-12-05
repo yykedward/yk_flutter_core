@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:yk_flutter_core/widget/yk_loading_widget.dart';
 import 'package:yk_flutter_core/yk_action_manager.dart';
 
 class YkCoreInfo {
@@ -9,6 +11,12 @@ class YkCoreInfo {
   String? _token;
 
   dynamic _config;
+
+  static Color mainColor = const Color(0xffFFC016);
+
+  static Color bgWhiteColor = Colors.white;
+
+  static Widget loadingWidget = YkLoadingWidget();
 }
 
 extension YkCoreInfoToken on YkCoreInfo {
@@ -40,21 +48,5 @@ extension YkCoreInfoConfig on YkCoreInfo {
 
   void clearConfig() {
     _config = null;
-  }
-}
-
-extension YkCoreInfoNetworking on YkCoreInfo {
-
-  Future<dynamic> networking({required String path, Map<String, dynamic>? params, String method = "GET", Map<String, dynamic>? header}) async {
-    return await YkActionManager.instance.executeAction("110", {
-      YkActionManager.ykAmGlobalKey: "private",
-      YkActionManager.ykAmFuncKey: "network",
-      YkActionManager.ykAmDataKey: {
-        "url": path,
-        "method": method,
-        "params": params,
-        "header": header
-      },
-    });
   }
 }

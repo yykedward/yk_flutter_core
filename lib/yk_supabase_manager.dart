@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 import 'package:flutter/foundation.dart';
+import 'package:yk_flutter_core/yk_log.dart';
 
 @immutable
 class YkUser {
@@ -43,15 +44,10 @@ class YkFileObject {
 class YkSupabaseManagerDelegate {
   final void Function(bool, String?) onLoading;
 
-  void Function(String msg)? log;
-
-  void Function(String msg)? onError;
-
-  YkSupabaseManagerDelegate({required this.onLoading, this.log, this.onError});
+  YkSupabaseManagerDelegate({required this.onLoading});
 }
 
 class YkSupabaseManager {
-
   final Map<String, DateTime> _fnLastCallAt = {};
   final Set<String> _fnInFlight = {};
   Duration _fnRateLimitWindow = const Duration(milliseconds: 500);
@@ -106,13 +102,13 @@ class YkSupabaseManager {
 /// MARK: DataBase
 extension YkSupabaseDataBaseExtension on YkSupabaseManager {
   Future<List<Map<String, dynamic>>> dbSelect(
-      String table, {
-        String? orderBy,
-        bool ascending = true,
-        Map<String, dynamic>? eq,
-        Map<String, List<dynamic>>? inFilter,
-        int? limit,
-      }) async {
+    String table, {
+    String? orderBy,
+    bool ascending = true,
+    Map<String, dynamic>? eq,
+    Map<String, List<dynamic>>? inFilter,
+    int? limit,
+  }) async {
     return _withLoading(() async {
       dynamic q = _client.from(table).select();
       q = _applyEq(q, eq);
@@ -350,11 +346,11 @@ extension YkSupabasePrivateExtension on YkSupabaseManager {
   }
 
   _log(String msg) {
-    _delegate?.log?.call(msg);
+    YkLog.log(msg: msg);
   }
 
   _error(String msg) {
-    _delegate?.onError?.call(msg);
+    YkLog.error(msg: msg);
   }
 }
 
