@@ -6,5 +6,4 @@ export 'package:yk_flutter_core/yk_core_info.dart';
 export 'package:yk_flutter_core/yk_dig_log_util.dart';
 export 'package:yk_flutter_core/yk_notification_center.dart';
 export 'package:yk_flutter_core/yk_widget.dart';
-export 'package:yk_flutter_core/yk_supabase_manager.dart';
 export 'package:yk_flutter_core/yk_log.dart';
