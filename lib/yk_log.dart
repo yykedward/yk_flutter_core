@@ -1,7 +1,6 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter/foundation.dart';
-import 'package:logging/logging.dart';
 
 mixin YkLogDelegate {
   Future log(String msg);
@@ -10,16 +9,11 @@ mixin YkLogDelegate {
 }
 
 class YkLog {
-  final _logger = Logger('YkLog');
 
   // 单例实现
   static final YkLog _instance = YkLog._();
 
-  YkLog._() {
-    _logger.onRecord.listen((value) {
-      print('[YkLog][${value.level.name}] ${value.message}');
-    });
-  }
+  YkLog._();
 
   YkLogDelegate? _delegate;
 
@@ -33,8 +27,6 @@ class YkLog {
     } else {
       if (kDebugMode) {
         developer.log("YkLog log : $msg");
-      } else {
-        YkLog._instance._logger.info(msg);
       }
     }
   }
@@ -45,8 +37,6 @@ class YkLog {
     } else {
       if (kDebugMode) {
         developer.log("YkLog error : $msg");
-      } else {
-        YkLog._instance._logger.severe(msg);
       }
     }
   }
