@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:yk_flutter_core/yk_core_info.dart';
 
-class YkLoadingWidget extends StatelessWidget {
+class YkEmptyWidget extends StatelessWidget {
   final double height;
   final double width;
 
-  const YkLoadingWidget({super.key, this.height = 50, this.width = 50});
+  const YkEmptyWidget({super.key, this.height = 50, this.width = 50});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
       height: height,
-      child:
-          Center(child: CircularProgressIndicator(color: YkCoreInfo.mainColor)),
+      child: Icon(Icons.layers_clear, color: YkCoreInfo.mainColor, size: 12),
     );
   }
 }

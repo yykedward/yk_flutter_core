@@ -1,13 +1,10 @@
 import 'package:intl/intl.dart';
 import 'dart:convert';
 
-extension YKIntCoreExtension on int {
-  String formatTime({String formatPattern = "yyyy-MM-dd HH:mm:ss"}) {
-    final dateTime = DateTime.fromMillisecondsSinceEpoch(this);
-    final dateFormat = DateFormat(formatPattern);
-    final dateStr = dateFormat.format(dateTime);
-    return dateStr;
-  }
+extension YKIntCoreExtension on num {
+  String formatTime({String formatPattern = "yyyy-MM-dd HH:mm:ss"}) =>
+      DateFormat(formatPattern)
+          .format(DateTime.fromMillisecondsSinceEpoch(toInt()));
 }
 
 extension YkExtensionString on String {
@@ -22,7 +19,6 @@ extension YkExtensionString on String {
 }
 
 extension YkDynamicExtension on dynamic {
-
   dynamic deepCopy() {
     if (this is Map || this is List) {
       return json.decode(json.encode(this));
@@ -33,4 +29,3 @@ extension YkDynamicExtension on dynamic {
     return null;
   }
 }
-

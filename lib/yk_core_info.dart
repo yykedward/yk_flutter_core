@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yk_flutter_core/widget/yk_empty_widget.dart';
 import 'package:yk_flutter_core/widget/yk_loading_widget.dart';
 import 'package:yk_flutter_core/yk_action_manager.dart';
 
@@ -17,6 +18,8 @@ class YkCoreInfo {
   static Color bgWhiteColor = Colors.white;
 
   static Widget loadingWidget = YkLoadingWidget();
+
+  static Widget emptyWidget = YkEmptyWidget();
 }
 
 extension YkCoreInfoToken on YkCoreInfo {

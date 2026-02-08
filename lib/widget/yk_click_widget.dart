@@ -6,6 +6,7 @@ class YkClickWidget extends StatefulWidget {
   final bool? needFilter;
   // 可以自定义防连点的时间间隔，默认1000毫秒
   final int interval;
+  final void Function()? onDoubleTap;
 
   const YkClickWidget({
     super.key,
@@ -13,6 +14,7 @@ class YkClickWidget extends StatefulWidget {
     required this.child,
     this.needFilter,
     this.interval = 1000,
+    this.onDoubleTap,
   });
 
   @override
@@ -27,6 +29,9 @@ class _YkClickWidgetState extends State<YkClickWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
+      onDoubleTap: () {
+        widget.onDoubleTap?.call();
+      },
       onTap: () {
         // 获取当前时间戳
         final int currentTime = DateTime.now().millisecondsSinceEpoch;
