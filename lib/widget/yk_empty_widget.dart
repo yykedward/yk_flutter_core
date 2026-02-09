@@ -12,7 +12,7 @@ class YkEmptyWidget extends StatelessWidget {
     return SizedBox(
       width: width,
       height: height,
-      child: Icon(Icons.layers_clear, color: YkCoreInfo.mainColor, size: 12),
+      child: Icon(Icons.layers_clear, color: YkCoreInfo.mainColor, size: 38),
     );
   }
 }
