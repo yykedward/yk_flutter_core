@@ -9,10 +9,6 @@ class YkCoreInfo {
 
   YkCoreInfo._();
 
-  String? _token;
-
-  dynamic _config;
-
   static Color mainColor = const Color(0xffFFC016);
 
   static Color bgWhiteColor = Colors.white;
@@ -20,36 +16,22 @@ class YkCoreInfo {
   static Widget loadingWidget = YkLoadingWidget();
 
   static Widget emptyWidget = YkEmptyWidget();
-}
 
-extension YkCoreInfoToken on YkCoreInfo {
-  Future<String?> getCoreToken({bool needShowLogin = false}) async {
-    if ((_token == null || _token!.isEmpty) && needShowLogin) {
-      _token = await YkActionManager.instance.executeAction("110", {
-        YkActionManager.ykAmGlobalKey: "private",
-        YkActionManager.ykAmFuncKey: "get_token",
-        YkActionManager.ykAmDataKey: {},
-      });
-    }
-    return _token;
+  Future<dynamic> getCoreToken({bool needShowLogin = false}) {
+    return YkActionManager.instance.executeAction("110", {
+      YkActionManager.ykAmGlobalKey: "yk_private",
+      YkActionManager.ykAmFuncKey: "get_token",
+      YkActionManager.ykAmDataKey: {
+        "need_login": needShowLogin,
+      },
+    });
   }
 
-  void clearToken() {
-    _token = null;
-  }
-}
-
-extension YkCoreInfoConfig on YkCoreInfo {
-  Future getConfig() async {
-    _config ??= await YkActionManager.instance.executeAction("110", {
-      YkActionManager.ykAmGlobalKey: "private",
+  Future getConfig() {
+    return YkActionManager.instance.executeAction("110", {
+      YkActionManager.ykAmGlobalKey: "yk_private",
       YkActionManager.ykAmFuncKey: "config",
       YkActionManager.ykAmDataKey: {},
     });
-    return _config;
-  }
-
-  void clearConfig() {
-    _config = null;
   }
 }
