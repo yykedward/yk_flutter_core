@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class YkClickWidget extends StatefulWidget {
   final void Function() onTap;
   final Widget child;
-  final bool? needFilter;
+  final bool needFilter;
+
   // 可以自定义防连点的时间间隔，默认1000毫秒
   final int interval;
   final void Function()? onDoubleTap;
@@ -12,7 +13,7 @@ class YkClickWidget extends StatefulWidget {
     super.key,
     required this.onTap,
     required this.child,
-    this.needFilter,
+    this.needFilter = true,
     this.interval = 1000,
     this.onDoubleTap,
   });
@@ -36,7 +37,7 @@ class _YkClickWidgetState extends State<YkClickWidget> {
         // 获取当前时间戳
         final int currentTime = DateTime.now().millisecondsSinceEpoch;
         // 判断是否需要过滤连点，默认需要
-        final bool needCheck = widget.needFilter ?? true;
+        final bool needCheck = widget.needFilter;
 
         if (needCheck) {
           // 检查时间间隔是否大于设定的interval（默认1000ms）

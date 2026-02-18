@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:yk_flutter_core/widget/yk_text_widget.dart';
 import 'package:yk_flutter_core/yk_core_info.dart';
 
 class YkLoadingWidget extends StatelessWidget {
-  final double height;
-  final double width;
+  final String text;
 
-  const YkLoadingWidget({super.key, this.height = 50, this.width = 50});
+  const YkLoadingWidget({super.key, this.text = ""});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child:
-          Center(child: CircularProgressIndicator(color: YkCoreInfo.mainColor)),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Center(child: CircularProgressIndicator(color: YkCoreInfo.mainColor)),
+        (text.isNotEmpty) ? const SizedBox(height: 2) : const SizedBox(),
+        (text.isNotEmpty)
+            ? YkTextWidget(text, style: TextStyle(color: YkCoreInfo.mainColor))
+            : Container(),
+      ],
     );
   }
 }

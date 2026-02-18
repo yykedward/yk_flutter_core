@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 // 将 LogData 改为私有类，添加下划线前缀
 class _LogData {
   final String event;
@@ -77,6 +79,9 @@ class YkDigLogUtil {
     required String title,
     required dynamic params,
   }) async {
+    if (kIsWeb) {
+      return;
+    }
     final logData = await _delegate?.handleData?.call(event, title, params) ?? '';
 
     _logQueue.add(logData);

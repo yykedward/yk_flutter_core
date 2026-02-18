@@ -13,7 +13,9 @@ class YkCoreInfo {
 
   static Color bgWhiteColor = Colors.white;
 
-  static Widget loadingWidget = YkLoadingWidget();
+  static Color textColor = const Color(0xFF333333);
+
+  static Widget loadingWidget = YkLoadingWidget(text: "加载中");
 
   static Widget emptyWidget = YkEmptyWidget();
 
