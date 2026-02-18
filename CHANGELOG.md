@@ -1,3 +1,8 @@
+## 0.0.12
+
+* FIX: getCoreToken & getConfig
+* ADD: YkEmptyWidget
+
 ## 0.0.11
 
 * ADD: yk supabase manager
