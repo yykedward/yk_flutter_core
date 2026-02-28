@@ -6,8 +6,10 @@ class YkFutureWidget<T> extends StatelessWidget {
 
   final Widget Function(BuildContext context, T t) widgetBuilder;
 
-  const YkFutureWidget(
-      {super.key, required this.initFuture, required this.widgetBuilder});
+  final Widget? loadingWidget;
+  final Widget? emptyWidget;
+
+  const YkFutureWidget({super.key, required this.initFuture, required this.widgetBuilder, this.loadingWidget, this.emptyWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +18,11 @@ class YkFutureWidget<T> extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.data == null) {
-              return YkCoreInfo.emptyWidget;
+              return emptyWidget ?? YkCoreInfo.emptyWidget;
             }
             return widgetBuilder(context, snapshot.data as T);
           } else {
-            return YkCoreInfo.loadingWidget;
+            return loadingWidget ?? YkCoreInfo.loadingWidget;
           }
         });
   }
