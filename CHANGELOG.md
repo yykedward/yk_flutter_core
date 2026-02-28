@@ -1,5 +1,9 @@
 ## 0.0.12
 
+* FEAT: YkFutureWidget add emptyWidget & loadingWidget
+
+## 0.0.12
+
 * FIX: getCoreToken & getConfig
 * ADD: YkEmptyWidget
 
