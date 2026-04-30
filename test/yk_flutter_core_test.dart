@@ -40,8 +40,8 @@ void main() {
       debugPrint(value);
     });
 
-    final token = await YkCoreInfo.instance.getCoreToken(needShowLogin: true);
-    final config = await YkCoreInfo.instance.getConfig();
+    final token = YkCoreInfo.instance.token;
+    final config = YkCoreInfo.instance.config;
 
     debugPrint("token: $token");
     debugPrint("config: $config");

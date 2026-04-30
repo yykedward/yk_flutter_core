@@ -19,21 +19,7 @@ class YkCoreInfo {
 
   static Widget emptyWidget = YkEmptyWidget();
 
-  Future<dynamic> getCoreToken({bool needShowLogin = false}) {
-    return YkActionManager.instance.executeAction("110", {
-      YkActionManager.ykAmGlobalKey: "yk_private",
-      YkActionManager.ykAmFuncKey: "get_token",
-      YkActionManager.ykAmDataKey: {
-        "need_login": needShowLogin,
-      },
-    });
-  }
+  dynamic token;
 
-  Future getConfig() {
-    return YkActionManager.instance.executeAction("110", {
-      YkActionManager.ykAmGlobalKey: "yk_private",
-      YkActionManager.ykAmFuncKey: "config",
-      YkActionManager.ykAmDataKey: {},
-    });
-  }
+  dynamic config;
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yk_flutter_core/yk_state.dart';
 
 class YkClickWidget extends StatefulWidget {
   final void Function() onTap;
@@ -22,7 +23,7 @@ class YkClickWidget extends StatefulWidget {
   State<YkClickWidget> createState() => _YkClickWidgetState();
 }
 
-class _YkClickWidgetState extends State<YkClickWidget> {
+class _YkClickWidgetState extends YkState<YkClickWidget> {
   // 把点击时间戳放到State类中，保留状态
   int _clickTime = 0;
 
