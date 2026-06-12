@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 /// 权限类型枚举
@@ -21,6 +22,9 @@ class YkPermission {
     bool requestIfDenied = true,
     Future<bool> Function(Future<bool> Function() openSetting)? onDenied,
   }) async {
+    if (kIsWeb) {
+      return false;
+    }
     Permission? permission;
 
     switch (type) {

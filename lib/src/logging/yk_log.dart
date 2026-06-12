@@ -23,7 +23,7 @@ class YkLog {
 
   static Future log({required String msg}) async {
     if (YkLog._instance._delegate != null) {
-      YkLog._instance._delegate?.log(msg);
+      await YkLog._instance._delegate?.log(msg);
     } else {
       if (kDebugMode) {
         developer.log("YkLog log : $msg");
@@ -33,7 +33,7 @@ class YkLog {
 
   static Future error({required String msg}) async {
     if (YkLog._instance._delegate != null) {
-      YkLog._instance._delegate?.error(msg);
+      await YkLog._instance._delegate?.error(msg);
     } else {
       if (kDebugMode) {
         developer.log("YkLog error : $msg");

@@ -1,3 +1,24 @@
+## 0.0.15
+
+* REFACTOR: restructure lib/ into src/ with modular subdirectories (managers/services/logging/core/extensions/widgets)
+* REFACTOR: split YkDigLogUtil - extract YkLogWriter for file I/O concerns
+* REFACTOR: rename YKNotificationCenter → YkNotificationCenter for consistent naming
+* FIX: add kIsWeb guard to YkPermission.check()
+* FIX: await delegate calls in YkLog.log() and YkLog.error()
+* FIX: add dispose() to YkNotificationCenter for StreamController cleanup
+* FIX: deepCopy() returns original value instead of null for unsupported types
+* FIX: replace deprecated textScaleFactor with textScaler in YkTextWidget
+* CHORE: remove empty yk_material.dart and unused imports
+* TEST: add 30 unit tests covering extensions, managers, logging, and widgets
+
+## 0.0.14
+
+* ADD: YkState abstract class with didDispose lifecycle flag
+* REFACTOR: YkClickWidget extends YkState instead of State
+* REFACTOR: YkCoreInfo.token and YkCoreInfo.config replace async getCoreToken()/getConfig()
+* REMOVE: yk_widget.dart widget barrel file (widgets now imported individually)
+* FIX: remove yk_widget.dart export from yk_flutter_core.dart barrel
+
 ## 0.0.12
 
 * FEAT: YkFutureWidget add emptyWidget & loadingWidget

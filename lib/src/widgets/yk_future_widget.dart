@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yk_flutter_core/yk_core_info.dart';
+import 'package:yk_flutter_core/src/core/yk_core_info.dart';
 
 class YkFutureWidget<T> extends StatelessWidget {
   final Future<T> initFuture;

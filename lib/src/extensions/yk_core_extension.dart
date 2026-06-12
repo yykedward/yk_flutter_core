@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'dart:convert';
 
-import 'package:yk_flutter_core/yk_log.dart';
+import 'package:yk_flutter_core/src/logging/yk_log.dart';
 
 extension YKIntCoreExtension on num {
   String formatTime({String formatPattern = "yyyy-MM-dd HH:mm:ss"}) =>
@@ -32,10 +32,7 @@ extension YkDynamicExtension on dynamic {
   dynamic deepCopy() {
     if (this is Map || this is List) {
       return json.decode(json.encode(this));
-    } else if (this is String) {
-      String newValue = this;
-      return newValue;
     }
-    return null;
+    return this;
   }
 }

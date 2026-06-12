@@ -10,7 +10,7 @@ class YkTextWidget extends Text {
     super.locale,
     super.softWrap,
     super.overflow,
-    super.textScaleFactor,
+    super.textScaler,
     super.maxLines,
     String fontFamily = '', // 设置默认字体
   }) : super(

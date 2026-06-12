@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:yk_flutter_core/widget/yk_text_widget.dart';
-import 'package:yk_flutter_core/yk_core_info.dart';
+import 'package:yk_flutter_core/src/widgets/yk_text_widget.dart';
+import 'package:yk_flutter_core/src/core/yk_core_info.dart';
 
 class YkEmptyWidget extends StatelessWidget {
   final String text;

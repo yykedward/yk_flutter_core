@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yk_flutter_core/yk_state.dart';
+import 'package:yk_flutter_core/src/core/yk_state.dart';
 
 class YkClickWidget extends StatefulWidget {
   final void Function() onTap;

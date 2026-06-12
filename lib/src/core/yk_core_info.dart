@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:yk_flutter_core/widget/yk_empty_widget.dart';
-import 'package:yk_flutter_core/widget/yk_loading_widget.dart';
-import 'package:yk_flutter_core/yk_action_manager.dart';
+import 'package:yk_flutter_core/src/widgets/yk_empty_widget.dart';
+import 'package:yk_flutter_core/src/widgets/yk_loading_widget.dart';
 
 class YkCoreInfo {
   // 单例实现
