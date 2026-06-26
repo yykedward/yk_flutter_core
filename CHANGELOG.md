@@ -1,3 +1,7 @@
+## 0.0.16
+
+* FEAT: add YkLogWriter, YkClickWidget, YkEmptyWidget, YkFutureWidget, YkLoadingWidget, YkTextWidget to barrel export
+
 ## 0.0.15
 
 * REFACTOR: restructure lib/ into src/ with modular subdirectories (managers/services/logging/core/extensions/widgets)
