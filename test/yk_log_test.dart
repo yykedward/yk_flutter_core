@@ -6,6 +6,11 @@ class _TestLogDelegate with YkLogDelegate {
   final List<String> errorMessages = [];
 
   @override
+  Future<dynamic> init() {
+    return Future.value();
+  }
+
+  @override
   Future log(String msg) async {
     logMessages.add(msg);
   }
@@ -20,7 +25,7 @@ void main() {
   group('YkLog', () {
     test('delegate receives log messages', () async {
       final delegate = _TestLogDelegate();
-      YkLog.init(delegate: delegate);
+      await YkLog.init(delegate: delegate);
 
       await YkLog.log(msg: 'test message');
 
@@ -29,7 +34,7 @@ void main() {
 
     test('delegate receives error messages', () async {
       final delegate = _TestLogDelegate();
-      YkLog.init(delegate: delegate);
+      await YkLog.init(delegate: delegate);
 
       await YkLog.error(msg: 'error message');
 
@@ -38,7 +43,7 @@ void main() {
 
     test('multiple log calls are all received', () async {
       final delegate = _TestLogDelegate();
-      YkLog.init(delegate: delegate);
+      await YkLog.init(delegate: delegate);
 
       await YkLog.log(msg: 'first');
       await YkLog.log(msg: 'second');

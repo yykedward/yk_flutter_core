@@ -3,6 +3,9 @@ import 'dart:developer' as developer;
 import 'package:flutter/foundation.dart';
 
 mixin YkLogDelegate {
+
+  Future init();
+
   Future log(String msg);
 
   Future error(String msg);
@@ -17,8 +20,9 @@ class YkLog {
 
   YkLogDelegate? _delegate;
 
-  static init({required YkLogDelegate delegate}) {
+  static Future init({required YkLogDelegate delegate}) {
     YkLog._instance._delegate = delegate;
+    return delegate.init();
   }
 
   static Future log({required String msg}) async {

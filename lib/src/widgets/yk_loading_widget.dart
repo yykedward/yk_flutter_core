@@ -14,9 +14,7 @@ class YkLoadingWidget extends StatelessWidget {
       children: [
         Center(child: CircularProgressIndicator(color: YkCoreInfo.mainColor)),
         (text.isNotEmpty) ? const SizedBox(height: 2) : const SizedBox(),
-        (text.isNotEmpty)
-            ? YkTextWidget(text, style: TextStyle(color: YkCoreInfo.mainColor))
-            : Container(),
+        (text.isNotEmpty) ? YkTextWidget(text, style: TextStyle(color: YkCoreInfo.mainColor)) : Container(),
       ],
     );
   }
